@@ -24,6 +24,8 @@ export default function ProductCard({
     ? { label: 'NEW', className: 'bg-black text-white' }
     : badgeType === 'LIMITED'
     ? { label: 'LIMITED', className: 'bg-red-600 text-white' }
+    : badgeType === 'COMING_SOON'
+    ? { label: 'COMING SOON', className: 'bg-gray-700 text-white' }
     : null;
 
   const hasValidImage = image && (image.startsWith('/') || image.startsWith('http'));

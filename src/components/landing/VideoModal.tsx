@@ -58,9 +58,8 @@ export default function VideoModal({ isOpen, onClose }: VideoModalProps) {
           </svg>
         </button>
         <div className="aspect-video rounded-lg overflow-hidden shadow-2xl">
-          {/* TODO: Replace with Jazba documentary URL */}
           <iframe
-            src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+            src="https://www.youtube.com/embed/EPId6zBtsks?autoplay=1"
             title="Jazba Basketball Documentary"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen

@@ -8,7 +8,13 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { items } = body;
 
-    const userSession = await auth();
+    // auth() may throw if AUTH_SECRET is not yet configured — treat as guest
+    let userSession = null;
+    try {
+      userSession = await auth();
+    } catch {
+      // continue as guest checkout
+    }
     const userId = userSession?.user?.id || null;
 
     if (!items || !Array.isArray(items) || items.length === 0) {

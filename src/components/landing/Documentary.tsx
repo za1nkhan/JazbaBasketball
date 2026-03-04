@@ -12,10 +12,9 @@ export default function Documentary() {
           A look inside the heart of Toronto&apos;s hardest-working basketball
           program.
         </p>
-        {/* TODO: Replace with Jazba documentary URL */}
         <div className="aspect-video rounded-xl overflow-hidden shadow-2xl">
           <iframe
-            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+            src="https://www.youtube.com/embed/EPId6zBtsks"
             title="Jazba Basketball Documentary"
             loading="lazy"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

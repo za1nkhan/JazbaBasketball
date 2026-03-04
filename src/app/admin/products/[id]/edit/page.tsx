@@ -384,6 +384,7 @@ export default function EditProductPage() {
               <option value="None">None</option>
               <option value="NEW">NEW</option>
               <option value="LIMITED">LIMITED</option>
+              <option value="COMING_SOON">COMING SOON (disables Add to Cart)</option>
             </select>
           </div>
 

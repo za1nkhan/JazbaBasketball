@@ -36,7 +36,7 @@ export default function Navbar() {
     <>
       <nav
         className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-          scrolled || pathname === '/account'
+          scrolled || pathname === '/account' || pathname.startsWith('/shop')
             ? 'bg-brand-deep shadow-lg'
             : 'bg-transparent hover:bg-white/10'
         }`}

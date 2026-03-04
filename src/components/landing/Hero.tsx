@@ -4,11 +4,21 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import VideoModal from './VideoModal';
 
-// TODO: Replace with real hero images
+// Drop images into public/images/hero/ named slide-1.jpg, slide-2.jpg, slide-3.jpg
+// Supports .jpg .jpeg .png .webp — gradient shows as fallback when no image is present
 const slides = [
-  { bg: 'linear-gradient(135deg, #133730 0%, #000000 100%)' },
-  { bg: 'linear-gradient(135deg, #0a1628 0%, #133730 50%, #000000 100%)' },
-  { bg: 'linear-gradient(135deg, #000000 0%, #1a1a2e 50%, #133730 100%)' },
+  {
+    image: '/images/hero/slide-1.jpg',
+    fallback: 'linear-gradient(135deg, #133730 0%, #000000 100%)',
+  },
+  {
+    image: '/images/hero/slide-2.jpg',
+    fallback: 'linear-gradient(135deg, #0a1628 0%, #133730 50%, #000000 100%)',
+  },
+  {
+    image: '/images/hero/slide-3.jpg',
+    fallback: 'linear-gradient(135deg, #000000 0%, #1a1a2e 50%, #133730 100%)',
+  },
 ];
 
 export default function Hero() {
@@ -38,22 +48,31 @@ export default function Hero() {
         aria-label="Hero image carousel"
         aria-roledescription="carousel"
       >
-        {/* Carousel Slides */}
+        {/* Carousel Slides — real photo on top, gradient fallback underneath */}
         {slides.map((slide, i) => (
           <div
             key={i}
-            className={`absolute inset-0 transition-opacity duration-1000 ${
-              i === currentSlide ? 'opacity-100' : 'opacity-0'
-            }`}
-            style={{ background: slide.bg }}
+            className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ${i === currentSlide ? 'opacity-100' : 'opacity-0'
+              }`}
+            style={{
+              backgroundImage: `url('${slide.image}'), ${slide.fallback}`,
+            }}
           />
         ))}
 
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+        {/* Dark green hue overlay */}
+        <div className="absolute inset-0 bg-brand-deep/60" />
+
+        {/* Gradient Overlay for text legibility */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
         {/* Content */}
-        <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4">
+        <div className="relative z-10 flex flex-col items-center justify-start h-full text-center px-4 pt-24 md:pt-28">
+          <img
+            src="/images/logo/jazba-logo.png"
+            alt="Jazba Basketball"
+            className="h-40 md:h-48 w-auto mb-3 drop-shadow-2xl"
+          />
           <span className="text-brand-accent text-sm font-semibold tracking-[0.3em] uppercase mb-4">
             Jazba Basketball
           </span>
@@ -103,9 +122,8 @@ export default function Hero() {
               aria-current={i === currentSlide ? 'true' : undefined}
             >
               <span
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  i === currentSlide ? 'bg-white w-6' : 'bg-white/40 w-2'
-                }`}
+                className={`h-2 rounded-full transition-all duration-300 ${i === currentSlide ? 'bg-white w-6' : 'bg-white/40 w-2'
+                  }`}
               />
             </button>
           ))}

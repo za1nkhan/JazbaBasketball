@@ -56,7 +56,7 @@ export default function Footer() {
             <div className="flex flex-col gap-3">
               {/* TODO: Replace with real social URLs from env vars */}
               <a
-                href="https://instagram.com/jazbabasketball"
+                href="https://instagram.com/jazba.basketball"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 text-gray-400 hover:text-white text-sm transition-colors"

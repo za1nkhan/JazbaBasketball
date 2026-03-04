@@ -54,8 +54,7 @@ function ContactForm() {
   };
 
   const inputClass = (field: string) =>
-    `w-full px-4 py-3 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent transition-colors ${
-      errors[field] ? 'border-red-400 bg-red-50' : 'border-gray-300'
+    `w-full px-4 py-3 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent transition-colors ${errors[field] ? 'border-red-400 bg-red-50' : 'border-gray-300'
     }`;
 
   if (submitted) {
@@ -157,22 +156,22 @@ const contactItems = [
     emoji: '✉',
     label: 'Email',
     // TODO: Replace with real contact info from env vars
-    value: 'info@jazbabasketball.com',
-    href: 'mailto:info@jazbabasketball.com',
+    value: 'jazbabasketball@gmail.com',
+    href: 'mailto:jazbabasketball@gmail.com',
   },
   {
     emoji: '📞',
     label: 'Phone',
     // TODO: Replace with real contact info from env vars
-    value: '+1 (647) 555-0123',
-    href: 'tel:+16475550123',
+    value: '+1 (416) 788-2395',
+    href: 'tel:+14167882395',
   },
   {
     emoji: '📸',
     label: 'Instagram',
     // TODO: Replace with real contact info from env vars
-    value: '@jazbabasketball',
-    href: 'https://instagram.com/jazbabasketball',
+    value: '@jazba.basketball',
+    href: 'https://instagram.com/jazba.basketball',
     external: true,
   },
   {

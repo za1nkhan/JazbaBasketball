@@ -1,18 +1,26 @@
+import Image from 'next/image';
+
 const programs = [
   {
     title: 'AAU / Grassroots',
     description:
       'Competitive AAU teams for U13–U17 athletes. Season runs spring through summer.',
+    image: '/images/offerings/aau-grassroots.jpg',
+    alt: 'Jazba Basketball AAU team posing together on the court',
   },
   {
     title: 'Tournaments',
     description:
       'Jazba-hosted tournaments and invitational events across the GTA.',
+    image: '/images/offerings/tournaments.jpg',
+    alt: 'Jazba Basketball team huddle during a tournament',
   },
   {
     title: 'Training & Development',
     description:
       'Year-round skill development sessions, clinics, and mentorship.',
+    image: '/images/offerings/training-development.jpg',
+    alt: 'Jazba Basketball athletes lined up during a training session',
   },
 ];
 
@@ -35,10 +43,15 @@ export default function Offerings() {
               key={program.title}
               className="rounded-xl overflow-hidden shadow-md hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300"
             >
-              {/* Image Placeholder */}
-              {/* TODO: Replace with program image */}
-              <div className="aspect-[4/3] bg-gray-200 flex items-center justify-center">
-                <span className="text-gray-400 text-sm">Program Image</span>
+              {/* Program Image */}
+              <div className="aspect-[4/3] relative">
+                <Image
+                  src={program.image}
+                  alt={program.alt}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
               </div>
 
               {/* Card Content */}

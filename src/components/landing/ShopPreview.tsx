@@ -1,11 +1,5 @@
 import Link from 'next/link';
-
-const previewProducts = [
-  { name: 'Elite Hoodie', price: '$85.00 CAD', badge: 'PRE-ORDER' },
-  { name: 'Courtside Tee', price: '$45.00 CAD', badge: 'NEW' },
-  { name: 'Training Shorts', price: '$55.00 CAD', badge: 'PRE-ORDER' },
-  { name: 'Snapback Cap', price: '$35.00 CAD', badge: 'NEW' },
-];
+import { getFeaturedProducts } from '@/lib/products';
 
 const badgeStyles: Record<string, string> = {
   'PRE-ORDER': 'bg-brand-accent text-white',
@@ -13,7 +7,9 @@ const badgeStyles: Record<string, string> = {
   LIMITED: 'bg-red-600 text-white',
 };
 
-export default function ShopPreview() {
+export default async function ShopPreview() {
+  const products = await getFeaturedProducts(4);
+
   return (
     <section id="shop-preview" className="bg-white border-t border-gray-100 py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -27,31 +23,41 @@ export default function ShopPreview() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
-          {previewProducts.map((product) => (
-            <div
-              key={product.name}
-              className="group cursor-pointer hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+          {products.map((product) => (
+            <Link
+              key={product.id}
+              href={`/shop/${product.slug}`}
+              className="group hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
             >
-              {/* Image Placeholder */}
-              {/* TODO: Replace with product image */}
               <div className="relative aspect-square bg-gray-200 rounded-lg overflow-hidden mb-3">
-                <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
-                  Product Image
-                </div>
-                {/* Badge */}
-                <span
-                  className={`absolute top-2 left-2 text-xs font-bold px-2 py-1 rounded ${
-                    badgeStyles[product.badge] ?? 'bg-gray-500 text-white'
-                  }`}
-                >
-                  {product.badge}
-                </span>
+                {product.images[0] ? (
+                  <img
+                    src={product.images[0]}
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+                    Product Image
+                  </div>
+                )}
+                {(product.isPreorder || product.badgeType) && (
+                  <span
+                    className={`absolute top-2 left-2 text-xs font-bold px-2 py-1 rounded ${
+                      badgeStyles[product.isPreorder ? 'PRE-ORDER' : product.badgeType!] ?? 'bg-gray-500 text-white'
+                    }`}
+                  >
+                    {product.isPreorder ? 'PRE-ORDER' : product.badgeType}
+                  </span>
+                )}
               </div>
               <p className="font-semibold text-gray-900 text-sm">
                 {product.name}
               </p>
-              <p className="text-gray-500 text-sm mt-1">{product.price}</p>
-            </div>
+              <p className="text-gray-500 text-sm mt-1">
+                ${(product.priceCents / 100).toFixed(2)} CAD
+              </p>
+            </Link>
           ))}
         </div>
 

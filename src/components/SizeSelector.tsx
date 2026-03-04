@@ -6,14 +6,25 @@ interface SizeSelectorProps {
   onSelect: (variantId: string, size: string) => void;
 }
 
+const SIZE_ORDER = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '2XL', '3XL'];
+
 export default function SizeSelector({
   variants,
   selectedVariantId,
   onSelect,
 }: SizeSelectorProps) {
+  const sorted = [...variants].sort((a, b) => {
+    const ai = SIZE_ORDER.indexOf(a.size);
+    const bi = SIZE_ORDER.indexOf(b.size);
+    if (ai === -1 && bi === -1) return a.size.localeCompare(b.size);
+    if (ai === -1) return 1;
+    if (bi === -1) return -1;
+    return ai - bi;
+  });
+
   return (
     <div className="flex flex-wrap gap-2">
-      {variants.map((variant) => (
+      {sorted.map((variant) => (
         <button
           key={variant.id}
           onClick={() => variant.active && onSelect(variant.id, variant.size)}

@@ -39,12 +39,16 @@ export default function ProductDetail({ product }: ProductDetailProps) {
   const mainImage = product.images[mainImageIndex] || null;
   const hasMainImage = mainImage && (mainImage.startsWith('/') || mainImage.startsWith('http'));
 
+  const isComingSoon = product.badgeType === 'COMING_SOON';
+
   const badgeContent = product.isPreorder
     ? { label: 'PRE-ORDER', className: 'bg-brand-accent text-white' }
     : product.badgeType === 'NEW'
     ? { label: 'NEW', className: 'bg-black text-white' }
     : product.badgeType === 'LIMITED'
     ? { label: 'LIMITED', className: 'bg-red-600 text-white' }
+    : isComingSoon
+    ? { label: 'COMING SOON', className: 'bg-gray-700 text-white' }
     : null;
 
   return (
@@ -122,33 +126,52 @@ export default function ProductDetail({ product }: ProductDetailProps) {
 
           {/* Description */}
           {product.description && (
-            <p className="text-gray-600 mt-6 leading-relaxed">{product.description}</p>
+            <div className="text-gray-600 mt-6 leading-relaxed space-y-4">
+              {product.description.split(/\n\n+/).map((para, i) => (
+                <p key={i}>
+                  {para.split('\n').map((line, j, arr) => (
+                    <span key={j}>
+                      {line}
+                      {j < arr.length - 1 && <br />}
+                    </span>
+                  ))}
+                </p>
+              ))}
+            </div>
           )}
 
           <hr className="border-t my-6" />
 
           {/* Size Selector */}
-          <div className="mb-6">
-            <p className="text-sm font-semibold text-gray-700 mb-3">Select Size</p>
-            <SizeSelector
-              variants={product.variants}
-              selectedVariantId={selectedVariantId}
-              onSelect={handleSizeSelect}
-            />
-          </div>
+          {!isComingSoon && (
+            <div className="mb-6">
+              <p className="text-sm font-semibold text-gray-700 mb-3">Select Size</p>
+              <SizeSelector
+                variants={product.variants}
+                selectedVariantId={selectedVariantId}
+                onSelect={handleSizeSelect}
+              />
+            </div>
+          )}
 
           {/* Add to Cart */}
-          <button
-            onClick={handleAddToCart}
-            disabled={!selectedVariantId}
-            className={`w-full py-4 text-lg font-bold rounded-lg transition-colors ${
-              selectedVariantId
-                ? 'bg-brand-deep text-white hover:bg-brand-deep/90'
-                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-            }`}
-          >
-            {product.isPreorder ? 'Pre-order Now' : 'Add to Cart'}
-          </button>
+          {isComingSoon ? (
+            <div className="w-full py-4 text-lg font-bold rounded-lg bg-gray-100 text-gray-400 text-center cursor-not-allowed select-none">
+              Coming Soon
+            </div>
+          ) : (
+            <button
+              onClick={handleAddToCart}
+              disabled={!selectedVariantId}
+              className={`w-full py-4 text-lg font-bold rounded-lg transition-colors ${
+                selectedVariantId
+                  ? 'bg-brand-deep text-white hover:bg-brand-deep/90'
+                  : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              }`}
+            >
+              {product.isPreorder ? 'Pre-order Now' : 'Add to Cart'}
+            </button>
+          )}
         </div>
       </div>
     </main>

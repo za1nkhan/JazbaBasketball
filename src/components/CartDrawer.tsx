@@ -4,8 +4,6 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useCartStore } from '@/store/cart';
 import CartItemRow from './CartItemRow';
-import StripeProvider from '@/components/StripeProvider';
-import ExpressCheckout from '@/components/ExpressCheckout';
 
 export default function CartDrawer() {
   const { isOpen, closeCart, items, subtotalCents, isHydrated } = useCartStore();
@@ -133,20 +131,7 @@ export default function CartDrawer() {
           </div>
           <p className="text-xs text-gray-500">Taxes &amp; shipping calculated at checkout</p>
 
-          {/* Express Checkout (Apple Pay / Google Pay) */}
-          {!isEmpty && process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY && (
-            <>
-              <StripeProvider key={subtotal} amount={subtotal}>
-                <ExpressCheckout />
-              </StripeProvider>
-              <div className="flex items-center gap-3">
-                <div className="flex-1 border-t border-gray-200" />
-                <span className="text-xs text-gray-400 uppercase tracking-wide">or</span>
-                <div className="flex-1 border-t border-gray-200" />
-              </div>
-            </>
-          )}
-
+          {/* TODO: Wire to /api/checkout/create-session */}
           <button
             onClick={handleCheckout}
             disabled={isEmpty || isCheckingOut}

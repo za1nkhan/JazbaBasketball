@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
@@ -89,7 +90,19 @@ async function main() {
     console.log(`Created product: ${created.name} (${created.slug})`);
   }
 
-  console.log('Seed complete: 6 products, 24 variants.');
+  // Admin user
+  const passwordHash = await bcrypt.hash('87654321', 12);
+  await prisma.user.create({
+    data: {
+      name: 'Admin',
+      email: 'admin@jazba.com',
+      passwordHash,
+      role: 'admin',
+    },
+  });
+  console.log('Created admin user: admin@jazba.com');
+
+  console.log('Seed complete: 6 products, 24 variants, 1 admin user.');
 }
 
 main()
