@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String?
+  email        String   @unique
+  passwordHash String
+  role         String   @default("user") // "user" | "admin"
+  createdAt    DateTime @default(now())
+  orders       Order[]
+}
+
+model Product {
+  id               String      @id @default(cuid())
+  name             String
+  slug             String      @unique
+  description      String
+  priceCents       Int
+  currency         String      @default("CAD")
+  images           String[]
+  isPreorder       Boolean     @default(false)
+  preorderShipDate DateTime?
+  badgeType        String?     // "NEW" | "LIMITED" | null (PRE-ORDER is derived from isPreorder)
+  active           Boolean     @default(true)
+  createdAt        DateTime    @default(now())
+  variants         Variant[]
+  orderItems       OrderItem[]
+}
+
+model Variant {
+  id         String      @id @default(cuid())
+  productId  String
+  size       String      // "S" | "M" | "L" | "XL"
+  active     Boolean     @default(true)
+  product    Product     @relation(fields: [productId], references: [id])
+  orderItems OrderItem[]
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  userId          String?
+  email           String
+  status          String      @default("pending") // "pending" | "paid" | "fulfilled" | "canceled"
+  subtotalCents   Int
+  currency        String      @default("CAD")
+  stripeSessionId String?     @unique
+  createdAt       DateTime    @default(now())
+  user            User?       @relation(fields: [userId], references: [id])
+  items           OrderItem[]
+}
+
+model OrderItem {
+  id             String  @id @default(cuid())
+  orderId        String
+  productId      String
+  variantId      String
+  qty            Int
+  unitPriceCents Int
+  order          Order   @relation(fields: [orderId], references: [id])
+  product        Product @relation(fields: [productId], references: [id])
+  variant        Variant @relation(fields: [variantId], references: [id])
+}
