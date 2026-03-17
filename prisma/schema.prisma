@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -54,6 +55,18 @@ model Order {
   createdAt       DateTime    @default(now())
   user            User?       @relation(fields: [userId], references: [id])
   items           OrderItem[]
+}
+
+model Sponsor {
+  id             String   @id @default(cuid())
+  name           String
+  logoUrl        String
+  website        String?
+  showInStrip    Boolean  @default(true)
+  showInShowcase Boolean  @default(true)
+  displayOrder   Int      @default(0)
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now())
 }
 
 model OrderItem {

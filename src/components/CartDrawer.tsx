@@ -131,8 +131,7 @@ export default function CartDrawer() {
           </div>
           <p className="text-xs text-gray-500">Taxes &amp; shipping calculated at checkout</p>
 
-          {/* TODO: Wire to /api/checkout/create-session */}
-          <button
+<button
             onClick={handleCheckout}
             disabled={isEmpty || isCheckingOut}
             className="w-full bg-brand-deep text-white py-3 font-semibold rounded-lg transition-colors hover:bg-brand-deep/90 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"

@@ -12,7 +12,10 @@ interface StripeProviderProps {
 export default function StripeProvider({ children, amount }: StripeProviderProps) {
   const stripePromise = useMemo(() => getStripe(), []);
 
-  if (!process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY) {
+  const key = process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY ?? '';
+  // Bail out if key is missing or is the placeholder value
+  const isRealKey = (key.startsWith('pk_test_') || key.startsWith('pk_live_')) && key.length > 30;
+  if (!isRealKey) {
     return <>{children}</>;
   }
 
