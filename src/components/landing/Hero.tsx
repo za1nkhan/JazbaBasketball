@@ -77,13 +77,12 @@ export default function Hero() {
             Jazba Basketball
           </span>
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white uppercase tracking-tight mb-4 leading-none">
-            Elevate Your
+            Home for
             <br />
-            Game
+            Pakistani Athletes
           </h1>
-          <p className="text-lg text-gray-300 max-w-xl mb-8">
-            Where grit meets greatness. Toronto&apos;s premier basketball
-            program.
+          <p className="text-lg text-gray-300 max-w-3xl mb-8">
+            The Central Hub to Elevate and Provide a Platform for Pakistani Athletes.
           </p>
 
           {/* CTA Row */}

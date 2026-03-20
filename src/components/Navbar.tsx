@@ -4,8 +4,14 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import localFont from 'next/font/local';
 import { useCartStore } from '@/store/cart';
 import CartDrawer from './CartDrawer';
+
+const victoryStriker = localFont({
+  src: '../../public/fonts/Victory Striker Sans Demo.otf',
+  display: 'swap',
+});
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -44,36 +50,37 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
-            <Link
-              href="/"
-              className="text-white font-bold text-2xl tracking-widest uppercase"
-            >
-              JAZBA
+            <Link href="/" className="flex-shrink-0">
+              <img
+                src="/images/logo/jazba-logo.png"
+                alt="Jazba Basketball"
+                className="h-16 w-auto"
+              />
             </Link>
 
             {/* Desktop Nav */}
-            <nav aria-label="Main navigation" className="hidden md:flex items-center gap-8">
+            <nav aria-label="Main navigation" className={`hidden md:flex items-center gap-8 ${victoryStriker.className}`}>
               <Link
                 href="/"
-                className="text-white text-sm font-medium tracking-wide uppercase hover:text-brand-accent transition-colors"
+                className="text-white text-base font-semibold tracking-wider uppercase hover:text-brand-accent transition-colors"
               >
                 Home
               </Link>
               <button
                 onClick={() => scrollToSection('offerings')}
-                className="text-white text-sm font-medium tracking-wide uppercase hover:text-brand-accent transition-colors cursor-pointer"
+                className="text-white text-base font-semibold tracking-wider uppercase hover:text-brand-accent transition-colors cursor-pointer"
               >
                 Program
               </button>
               <Link
                 href="/shop"
-                className="text-white text-sm font-medium tracking-wide uppercase hover:text-brand-accent transition-colors"
+                className="text-white text-base font-semibold tracking-wider uppercase hover:text-brand-accent transition-colors"
               >
                 Shop
               </Link>
               <Link
                 href="/account"
-                className="text-white text-sm font-medium tracking-wide uppercase hover:text-brand-accent transition-colors"
+                className="text-white text-base font-semibold tracking-wider uppercase hover:text-brand-accent transition-colors"
               >
                 {session?.user ? (
                   <span className="w-8 h-8 rounded-full bg-brand-accent flex items-center justify-center text-sm font-bold">
@@ -160,7 +167,7 @@ export default function Navbar() {
         }`}
       >
         <div className="flex items-center justify-between p-6 border-b border-white/10">
-          <span className="text-white font-bold text-xl tracking-widest">JAZBA</span>
+          <img src="/images/logo/jazba-logo.png" alt="Jazba Basketball" className="h-12 w-auto" />
           <button
             onClick={() => setMenuOpen(false)}
             className="text-white"
@@ -182,31 +189,31 @@ export default function Navbar() {
             </svg>
           </button>
         </div>
-        <nav aria-label="Mobile navigation" className="flex flex-col p-6 gap-2">
+        <nav aria-label="Mobile navigation" className={`flex flex-col p-6 gap-2 ${victoryStriker.className}`}>
           <Link
             href="/"
             onClick={() => setMenuOpen(false)}
-            className="text-white text-lg font-medium tracking-wide uppercase hover:text-brand-accent transition-colors py-3"
+            className="text-white text-lg font-semibold tracking-wider uppercase hover:text-brand-accent transition-colors py-3"
           >
             Home
           </Link>
           <button
             onClick={() => scrollToSection('offerings')}
-            className="text-left text-white text-lg font-medium tracking-wide uppercase hover:text-brand-accent transition-colors py-3"
+            className="text-left text-white text-lg font-semibold tracking-wider uppercase hover:text-brand-accent transition-colors py-3"
           >
             Program
           </button>
           <Link
             href="/shop"
             onClick={() => setMenuOpen(false)}
-            className="text-white text-lg font-medium tracking-wide uppercase hover:text-brand-accent transition-colors py-3"
+            className="text-white text-lg font-semibold tracking-wider uppercase hover:text-brand-accent transition-colors py-3"
           >
             Shop
           </Link>
           <Link
             href="/account"
             onClick={() => setMenuOpen(false)}
-            className="text-white text-lg font-medium tracking-wide uppercase hover:text-brand-accent transition-colors py-3"
+            className="text-white text-lg font-semibold tracking-wider uppercase hover:text-brand-accent transition-colors py-3"
           >
             Account
           </Link>

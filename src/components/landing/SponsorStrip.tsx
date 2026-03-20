@@ -20,7 +20,7 @@ export default async function SponsorStrip() {
             {[...placeholders, ...placeholders].map((name, i) => (
               <div
                 key={i}
-                className="w-24 h-10 bg-gray-300 rounded flex items-center justify-center text-xs text-gray-500 font-medium mx-6"
+                className="w-36 h-16 bg-gray-300 rounded flex items-center justify-center text-xs text-gray-500 font-medium mx-8"
               >
                 {name}
               </div>
@@ -51,9 +51,9 @@ export default async function SponsorStrip() {
                   <Image
                     src={sponsor.logoUrl}
                     alt={sponsor.name}
-                    width={96}
-                    height={40}
-                    className="h-10 w-24 object-contain"
+                    width={144}
+                    height={64}
+                    className="h-16 w-36 object-contain"
                     unoptimized
                   />
                 </a>
@@ -61,9 +61,9 @@ export default async function SponsorStrip() {
                 <Image
                   src={sponsor.logoUrl}
                   alt={sponsor.name}
-                  width={96}
-                  height={40}
-                  className="h-10 w-24 object-contain"
+                  width={144}
+                  height={64}
+                  className="h-16 w-36 object-contain"
                   unoptimized
                 />
               )}
