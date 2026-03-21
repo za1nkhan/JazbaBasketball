@@ -91,6 +91,15 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
   const userId = session.metadata?.userId || null;
 
+  // Retrieve full session to get shipping details (under collected_information in API v2026+)
+  const fullSession = await stripe.checkout.sessions.retrieve(sessionId);
+  const collected = (fullSession as unknown as {
+    collected_information?: {
+      shipping_details?: { name?: string; address?: Stripe.Address } | null;
+    } | null;
+  }).collected_information;
+  const shipping = collected?.shipping_details;
+
   const subtotalCents = cartItems.reduce(
     (sum, item) => sum + item.unitPriceCents * item.qty,
     0
@@ -101,10 +110,17 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       data: {
         stripeSessionId: sessionId,
         email,
-        userId,
+        ...(userId ? { user: { connect: { id: userId } } } : {}),
         status: 'paid',
         subtotalCents,
         currency: 'CAD',
+        shippingName: shipping?.name || null,
+        shippingLine1: shipping?.address?.line1 || null,
+        shippingLine2: shipping?.address?.line2 || null,
+        shippingCity: shipping?.address?.city || null,
+        shippingProvince: shipping?.address?.state || null,
+        shippingPostalCode: shipping?.address?.postal_code || null,
+        shippingCountry: shipping?.address?.country || null,
         items: {
           create: cartItems.map((item) => ({
             productId: item.productId,

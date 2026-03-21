@@ -96,6 +96,19 @@ export async function POST(req: NextRequest) {
       shipping_address_collection: {
         allowed_countries: ['CA'],
       },
+      shipping_options: [
+        {
+          shipping_rate_data: {
+            type: 'fixed_amount',
+            fixed_amount: { amount: 0, currency: 'cad' },
+            display_name: 'Free Shipping',
+            delivery_estimate: {
+              minimum: { unit: 'business_day', value: 5 },
+              maximum: { unit: 'business_day', value: 10 },
+            },
+          },
+        },
+      ],
       ...(userSession?.user?.email ? { customer_email: userSession.user.email } : {}),
       success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/shop`,

@@ -45,16 +45,23 @@ model Variant {
 }
 
 model Order {
-  id              String      @id @default(cuid())
-  userId          String?
-  email           String
-  status          String      @default("pending") // "pending" | "paid" | "fulfilled" | "canceled"
-  subtotalCents   Int
-  currency        String      @default("CAD")
-  stripeSessionId String?     @unique
-  createdAt       DateTime    @default(now())
-  user            User?       @relation(fields: [userId], references: [id])
-  items           OrderItem[]
+  id                 String      @id @default(cuid())
+  userId             String?
+  email              String
+  status             String      @default("pending") // "pending" | "paid" | "fulfilled" | "canceled"
+  subtotalCents      Int
+  currency           String      @default("CAD")
+  stripeSessionId    String?     @unique
+  shippingName       String?
+  shippingLine1      String?
+  shippingLine2      String?
+  shippingCity       String?
+  shippingProvince   String?
+  shippingPostalCode String?
+  shippingCountry    String?
+  createdAt          DateTime    @default(now())
+  user               User?       @relation(fields: [userId], references: [id])
+  items              OrderItem[]
 }
 
 model Sponsor {

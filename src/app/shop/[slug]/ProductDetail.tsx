@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { ProductWithVariants } from '@/lib/products';
 import { useCartStore } from '@/store/cart';
 import SizeSelector from '@/components/SizeSelector';
@@ -53,6 +54,17 @@ export default function ProductDetail({ product }: ProductDetailProps) {
 
   return (
     <main id="main-content" className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      {/* Back to Shop */}
+      <Link
+        href="/shop"
+        className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-brand-deep transition-colors mb-6"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+        Back to Shop
+      </Link>
+
       <div className="md:grid md:grid-cols-2 gap-12">
         {/* Left — Image */}
         <div>
