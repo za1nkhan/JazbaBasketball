@@ -12,14 +12,12 @@ export async function POST(req: NextRequest) {
   const signature = req.headers.get('stripe-signature');
 
   if (!signature) {
-    console.error('Webhook error: No stripe-signature header');
     return NextResponse.json({ error: 'No signature' }, { status: 400 });
   }
 
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
   if (!webhookSecret) {
-    console.error('Webhook error: STRIPE_WEBHOOK_SECRET not set');
     return NextResponse.json({ error: 'Webhook secret not configured' }, { status: 500 });
   }
 
@@ -27,85 +25,76 @@ export async function POST(req: NextRequest) {
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
-    console.error(`Webhook signature verification failed: ${message}`);
     return NextResponse.json(
-      { error: `Webhook signature verification failed: ${message}` },
+      { error: `Signature verification failed: ${message}` },
       { status: 400 }
     );
   }
 
-  switch (event.type) {
-    case 'checkout.session.completed': {
-      const session = event.data.object as Stripe.Checkout.Session;
-      await handleCheckoutCompleted(session);
-      break;
-    }
-    default:
-      console.log(`Unhandled webhook event type: ${event.type}`);
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object as Stripe.Checkout.Session;
+    const result = await handleCheckoutCompleted(session);
+    return NextResponse.json({ received: true, event: event.type, result }, { status: 200 });
   }
 
-  return NextResponse.json({ received: true }, { status: 200 });
+  return NextResponse.json({ received: true, event: event.type, result: 'unhandled' }, { status: 200 });
 }
 
-async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
+async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promise<string> {
   const sessionId = session.id;
 
-  const existingOrder = await prisma.order.findUnique({
-    where: { stripeSessionId: sessionId },
-  });
-
-  if (existingOrder) {
-    console.log(`Order already exists for session ${sessionId}, skipping.`);
-    return;
-  }
-
-  const itemsJson = session.metadata?.items;
-  if (!itemsJson) {
-    console.error(`No items metadata on session ${sessionId}`);
-    return;
-  }
-
-  let cartItems: {
-    productId: string;
-    variantId: string;
-    qty: number;
-    unitPriceCents: number;
-  }[];
-
   try {
-    cartItems = JSON.parse(itemsJson);
-  } catch {
-    console.error(`Failed to parse items metadata on session ${sessionId}`);
-    return;
-  }
+    const existingOrder = await prisma.order.findUnique({
+      where: { stripeSessionId: sessionId },
+    });
 
-  if (!cartItems || cartItems.length === 0) {
-    console.error(`Empty cart items on session ${sessionId}`);
-    return;
-  }
+    if (existingOrder) {
+      return `duplicate: order ${existingOrder.id} already exists`;
+    }
 
-  const email =
-    session.customer_details?.email ||
-    session.customer_email ||
-    'unknown@checkout.stripe.com';
+    const itemsJson = session.metadata?.items;
+    if (!itemsJson) {
+      return `error: no items metadata on session ${sessionId}`;
+    }
 
-  const userId = session.metadata?.userId || null;
+    let cartItems: {
+      productId: string;
+      variantId: string;
+      qty: number;
+      unitPriceCents: number;
+    }[];
 
-  // Retrieve full session to get shipping details (under collected_information in API v2026+)
-  const fullSession = await stripe.checkout.sessions.retrieve(sessionId);
-  const collected = (fullSession as unknown as {
-    collected_information?: {
-      shipping_details?: { name?: string; address?: Stripe.Address } | null;
-    } | null;
-  }).collected_information;
-  const shipping = collected?.shipping_details;
+    try {
+      cartItems = JSON.parse(itemsJson);
+    } catch {
+      return `error: failed to parse items metadata`;
+    }
 
-  const subtotalCents = cartItems.reduce(
-    (sum, item) => sum + item.unitPriceCents * item.qty,
-    0
-  );
+    if (!cartItems || cartItems.length === 0) {
+      return `error: empty cart items`;
+    }
 
-  try {
+    const email =
+      session.customer_details?.email ||
+      session.customer_email ||
+      'unknown@checkout.stripe.com';
+
+    const userId = session.metadata?.userId || null;
+
+    // Retrieve full session to get shipping details (under collected_information in API v2026+)
+    const fullSession = await stripe.checkout.sessions.retrieve(sessionId);
+    const collected = (fullSession as unknown as {
+      collected_information?: {
+        shipping_details?: { name?: string; address?: Stripe.Address } | null;
+      } | null;
+    }).collected_information;
+    const shipping = collected?.shipping_details;
+
+    const subtotalCents = cartItems.reduce(
+      (sum, item) => sum + item.unitPriceCents * item.qty,
+      0
+    );
+
     const order = await prisma.order.create({
       data: {
         stripeSessionId: sessionId,
@@ -133,10 +122,9 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       include: { items: true },
     });
 
-    console.log(
-      `✅ Order created: ${order.id} (${order.items.length} items, $${(order.subtotalCents / 100).toFixed(2)} CAD)`
-    );
+    return `success: order ${order.id} created (${order.items.length} items, $${(order.subtotalCents / 100).toFixed(2)} CAD)`;
   } catch (error) {
-    console.error(`Failed to create order for session ${sessionId}:`, error);
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return `error: ${message}`;
   }
 }
