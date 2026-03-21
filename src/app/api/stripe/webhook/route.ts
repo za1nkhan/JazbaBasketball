@@ -79,7 +79,14 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promis
       session.customer_email ||
       'unknown@checkout.stripe.com';
 
-    const userId = session.metadata?.userId || null;
+    const metadataUserId = session.metadata?.userId || null;
+
+    // Verify user exists before connecting (handles stale JWTs / DB resets)
+    let userId: string | null = null;
+    if (metadataUserId) {
+      const user = await prisma.user.findUnique({ where: { id: metadataUserId } });
+      userId = user ? metadataUserId : null;
+    }
 
     // Retrieve full session to get shipping details (under collected_information in API v2026+)
     const fullSession = await stripe.checkout.sessions.retrieve(sessionId);
